@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>초미녀헌터 슈팅게임</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        overflow: hidden;
+        background: linear-gradient(to bottom, #111, #222);
+        font-family: Arial, sans-serif;
+    }
+
+    canvas {
+        display: block;
+        margin: 0 auto;
+        background: linear-gradient(to bottom, #3b82f6, #111827);
+    }
+
+    #ui {
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        display: flex;
+        gap: 30px;
+        z-index: 10;
+    }
+
+    #gameOver {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        text-align: center;
+        display: none;
+        z-index: 20;
+    }
+
+    #gameOver h1 {
+        font-size: 60px;
+        margin-bottom: 20px;
+    }
+
+    #gameOver button {
+        padding: 12px 24px;
+        font-size: 20px;
+        border: none;
+        border-radius: 10px;
+        background: hotpink;
+        color: white;
+        cursor: pointer;
+    }
+
+    #gameOver button:hover {
+        background: deeppink;
+    }
+</style>
+</head>
+<body>
+
+<div id="ui">
+    <div>점수: <span id="score">0</span></div>
+    <div>목숨: <span id="life">3</span></div>
+</div>
+
+<div id="gameOver">
+    <h1>GAME OVER</h1>
+    <p id="finalScore"></p>
+    <br>
+    <button onclick="restartGame()">다시하기</button>
+</div>
+
+<canvas id="gameCanvas"></canvas>
+
+<script>
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const scoreEl = document.getElementById("score");
+const lifeEl = document.getElementById("life");
+const gameOverEl = document.getElementById("gameOver");
+const finalScoreEl = document.getElementById("finalScore");
+
+let score = 0;
+let life = 3;
+let gameRunning = true;
+
+const keys = {};
+
+document.addEventListener("keydown", (e) => {
+    keys[e.key] = true;
+
+    if (e.key === " ") {
+        shoot();
+    }
+});
+
+document.addEventListener("keyup", (e) => {
+    keys[e.key] = false;
+});
+
+const player = {
+    x: canvas.width / 2,
+    y: canvas.height - 120,
+    width: 70,
+    height: 90,
+    speed: 7
+};
+
+const bullets = [];
+const obstacles = [];
+
+function shoot() {
+    if (!gameRunning) return;
+
+    bullets.push({
+        x: player.x + player.width / 2 - 5,
+        y: player.y,
+        width: 10,
+        height: 20,
+        speed: 10
+    });
+}
+
+function createObstacle() {
+    const size = Math.random() * 50 + 40;
+
+    obstacles.push({
+        x: Math.random() * (canvas.width - size),
+        y: -size,
+        width: size,
+        height: size,
+        speed: Math.random() * 3 + 3
+    });
+}
+
+setInterval(() => {
+    if (gameRunning) {
+        createObstacle();
+    }
+}, 1000);
+
+function update() {
+    if (!gameRunning) return;
+
+    if (keys["ArrowLeft"] || keys["a"]) {
+        player.x -= player.speed;
+    }
+
+    if (keys["ArrowRight"] || keys["d"]) {
+        player.x += player.speed;
+    }
+
+    if (player.x < 0) player.x = 0;
+    if (player.x + player.width > canvas.width) {
+        player.x = canvas.width - player.width;
+    }
+
+    bullets.forEach((bullet, bIndex) => {
+        bullet.y -= bullet.speed;
+
+        if (bullet.y < 0) {
+            bullets.splice(bIndex, 1);
+        }
+    });
+
+    obstacles.forEach((obs, oIndex) => {
+        obs.y += obs.speed;
+
+        if (
+            obs.x < player.x + player.width &&
+            obs.x + obs.width > player.x &&
+            obs.y < player.y + player.height &&
+            obs.y + obs.height > player.y
+        ) {
+            obstacles.splice(oIndex, 1);
+            life--;
+            lifeEl.textContent = life;
+
+            if (life <= 0) {
+                gameOver();
+            }
+        }
+
+        bullets.forEach((bullet, bIndex) => {
+            if (
+                bullet.x < obs.x + obs.width &&
+                bullet.x + bullet.width > obs.x &&
+                bullet.y < obs.y + obs.height &&
+                bullet.y + bullet.height > obs.y
+            ) {
+                bullets.splice(bIndex, 1);
+                obstacles.splice(oIndex, 1);
+
+                score += 10;
+                scoreEl.textContent = score;
+            }
+        });
+
+        if (obs.y > canvas.height) {
+            obstacles.splice(oIndex, 1);
+        }
+    });
+}
+
+function drawPlayer() {
+    // 머리
+    ctx.fillStyle = "#ffe0bd";
+    ctx.beginPath();
+    ctx.arc(player.x + 35, player.y + 20, 18, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 머리카락
+    ctx.fillStyle = "#111";
+    ctx.beginPath();
+    ctx.arc(player.x + 35, player.y + 15, 20, Math.PI, Math.PI * 2);
+    ctx.fill();
+
+    // 몸
+    ctx.fillStyle = "hotpink";
+    ctx.fillRect(player.x + 15, player.y + 35, 40, 45);
+
+    // 다리
+    ctx.fillStyle = "#ffe0bd";
+    ctx.fillRect(player.x + 20, player.y + 80, 10, 20);
+    ctx.fillRect(player.x + 40, player.y + 80, 10, 20);
+
+    // 총
+    ctx.fillStyle = "silver";
+    ctx.fillRect(player.x + 55, player.y + 45, 25, 8);
+}
+
+function drawBullets() {
+    ctx.fillStyle = "yellow";
+
+    bullets.forEach((bullet) => {
+        ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+    });
+}
+
+function drawObstacles() {
+    obstacles.forEach((obs) => {
+        ctx.fillStyle = "#8b5cf6";
+        ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+
+        ctx.fillStyle = "white";
+        ctx.font = "20px Arial";
+        ctx.fillText("★", obs.x + obs.width / 3, obs.y + obs.height / 1.5);
+    });
+}
+
+function drawBackground() {
+    ctx.fillStyle = "rgba(255,255,255,0.2)";
+
+    for (let i = 0; i < 50; i++) {
+        ctx.fillRect(
+            Math.random() * canvas.width,
+            Math.random() * canvas.height,
+            2,
+            2
+        );
+    }
+}
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    drawBackground();
+    drawPlayer();
+    drawBullets();
+    drawObstacles();
+}
+
+function gameLoop() {
+    update();
+    draw();
+    requestAnimationFrame(gameLoop);
+}
+
+function gameOver() {
+    gameRunning = false;
+    gameOverEl.style.display = "block";
+    finalScoreEl.textContent = "최종 점수 : " + score;
+}
+
+function restartGame() {
+    score = 0;
+    life = 3;
+
+    bullets.length = 0;
+    obstacles.length = 0;
+
+    scoreEl.textContent = score;
+    lifeEl.textContent = life;
+
+    player.x = canvas.width / 2;
+
+    gameRunning = true;
+    gameOverEl.style.display = "none";
+}
+
+gameLoop();
+
+window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+</script>
+
+</body>
+</html>

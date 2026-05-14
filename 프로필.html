@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ninaz Shin Portfolio</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      max-width: 100%;
+    }
+
+    body {
+      font-family: 'Playfair Display', Georgia, serif;
+      background: #f4ede3;
+      color: #4e4338;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .container {
+      width: 92%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* NAVIGATION */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 40px 0 25px;
+      border-bottom: 1px solid rgba(78,67,56,0.15);
+    }
+
+    .logo h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .logo p {
+      margin-top: 8px;
+      font-size: 1rem;
+      opacity: 0.7;
+    }
+
+    .menu {
+      display: flex;
+      gap: 35px;
+      font-size: 0.95rem;
+      letter-spacing: 1px;
+    }
+
+    .menu a {
+      transition: 0.3s ease;
+      position: relative;
+    }
+
+    .menu a::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -5px;
+      width: 0%;
+      height: 1px;
+      background: #4e4338;
+      transition: 0.3s;
+    }
+
+    .menu a:hover::after {
+      width: 100%;
+    }
+
+    /* HERO */
+    .hero {
+      margin-top: 50px;
+      background: rgba(255,255,255,0.45);
+      border-radius: 24px;
+      padding: 40px;
+      display: flex;
+      align-items: center;
+      gap: 35px;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    .profile-image {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #d8c7b3, #f7f0e6);
+      flex-shrink: 0;
+      border: 4px solid rgba(255,255,255,0.8);
+      position: relative;
+    }
+
+    .profile-image::after {
+      content: 'PHOTO';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      opacity: 0.6;
+    }
+
+    .hero-content h2 {
+      font-size: 2rem;
+      margin-bottom: 15px;
+    }
+
+    .info-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      font-size: 0.95rem;
+      opacity: 0.85;
+    }
+
+    .info-item {
+      padding-right: 18px;
+      border-right: 1px solid rgba(78,67,56,0.2);
+    }
+
+    .info-item:last-child {
+      border-right: none;
+      padding-right: 0;
+    }
+
+    /* SECTIONS */
+    section {
+      margin-top: 90px;
+    }
+
+    .section-title {
+      font-size: 2rem;
+      margin-bottom: 40px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .section-title::after {
+      content: '';
+      width: 60%;
+      height: 2px;
+      background: rgba(78,67,56,0.25);
+      position: absolute;
+      left: 0;
+      bottom: -10px;
+    }
+
+    .about-text {
+      background: rgba(255,255,255,0.4);
+      padding: 35px;
+      border-radius: 22px;
+      font-size: 1.05rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+    }
+
+    /* TIMELINE */
+    .timeline {
+      position: relative;
+      margin-top: 30px;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 140px 40px 1fr;
+      gap: 20px;
+      margin-bottom: 45px;
+      align-items: start;
+    }
+
+    .timeline-year {
+      font-size: 1rem;
+      opacity: 0.7;
+      padding-top: 3px;
+    }
+
+    .timeline-dot {
+      width: 16px;
+      height: 16px;
+      background: #8d6e52;
+      border-radius: 50%;
+      margin-top: 8px;
+      position: relative;
+    }
+
+    .timeline-dot::after {
+      content: '';
+      position: absolute;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 80px;
+      background: rgba(78,67,56,0.18);
+    }
+
+    .timeline-item:last-child .timeline-dot::after {
+      display: none;
+    }
+
+    .timeline-content {
+      background: rgba(255,255,255,0.45);
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+    }
+
+    .timeline-content h3 {
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+    }
+
+    .timeline-content p {
+      opacity: 0.8;
+    }
+
+    /* CONTACT */
+    .contact-box {
+      background: rgba(255,255,255,0.45);
+      padding: 35px;
+      border-radius: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+    }
+
+    .contact-box div {
+      font-size: 1rem;
+    }
+
+    /* FOOTER */
+    footer {
+      margin-top: 100px;
+      padding: 30px 0 50px;
+      text-align: center;
+      opacity: 0.6;
+      font-size: 0.9rem;
+    }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+
+      nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 25px;
+      }
+
+      .logo h1 {
+        font-size: 2rem;
+      }
+
+      .menu {
+        width: 100%;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .hero {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 28px;
+      }
+
+      .hero-content h2 {
+        font-size: 1.6rem;
+      }
+
+      .info-line {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .info-item {
+        border-right: none;
+        padding-right: 0;
+      }
+
+      section {
+        margin-top: 70px;
+      }
+
+      .section-title {
+        font-size: 1.6rem;
+      }
+
+      .about-text {
+        padding: 25px;
+        font-size: 0.98rem;
+      }
+
+      .timeline-item {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .timeline-dot {
+        margin-left: 4px;
+      }
+
+      .timeline-dot::after {
+        left: 7px;
+        height: 60px;
+      }
+
+      .timeline-content {
+        padding: 22px;
+      }
+
+      .timeline-content h3 {
+        font-size: 1.15rem;
+      }
+
+      .contact-box {
+        padding: 25px;
+      }
+
+      footer {
+        margin-top: 70px;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <nav>
+      <div class="logo">
+        <h1>Ninaz Shin</h1>
+        <p>노는게 제일 좋은 월급노예</p>
+      </div>
+
+      <div class="menu">
+        <a href="#about">ABOUT</a>
+        <a href="#experience">EXPERIENCE</a>
+        <a href="#education">EDUCATION</a>
+        <a href="#contact">CONTACT</a>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <div class="profile-image"></div>
+
+      <div class="hero-content">
+        <h2>Ninaz Shin</h2>
+
+        <div class="info-line">
+          <div class="info-item">📞 010-000-0000</div>
+          <div class="info-item">📍 광주광역시</div>
+          <div class="info-item">✉ ninaz5021@gmail.com</div>
+        </div>
+      </div>
+    </header>
+
+    <section id="about">
+      <h2 class="section-title">ABOUT</h2>
+
+      <div class="about-text">
+        유쾌한 감성과 여유로운 라이프스타일을 사랑하는 사람.  
+        잘 쉬고, 잘 놀고, 잘 살아내는 것 또한 하나의 능력이라 믿으며  
+        소소한 일상 속에서도 즐거움을 발견하는 데 익숙합니다.
+      </div>
+    </section>
+
+    <section id="experience">
+      <h2 class="section-title">WORK HISTORY</h2>
+
+      <div class="timeline">
+
+        <div class="timeline-item">
+          <div class="timeline-year">2020 - Present</div>
+          <div class="timeline-dot"></div>
+
+          <div class="timeline-content">
+            <h3>노는게 제일 좋은 월급노예</h3>
+            <p>즐거움 연구소</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-year">2015 - 2020</div>
+          <div class="timeline-dot"></div>
+
+          <div class="timeline-content">
+            <h3>잘 놈</h3>
+            <p>프리라이프 컴퍼니</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-year">2010 - 2015</div>
+          <div class="timeline-dot"></div>
+
+          <div class="timeline-content">
+            <h3>매우 잘 놈</h3>
+            <p>휴식 전문 그룹</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="education">
+      <h2 class="section-title">EDUCATION</h2>
+
+      <div class="timeline">
+
+        <div class="timeline-item">
+          <div class="timeline-year">1994 - 1998</div>
+          <div class="timeline-dot"></div>
+
+          <div class="timeline-content">
+            <h3>배울만큼은 배움</h3>
+            <p>인생대학교</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="contact">
+      <h2 class="section-title">CONTACT</h2>
+
+      <div class="contact-box">
+        <div><strong>Name:</strong> Ninaz Shin</div>
+        <div><strong>Phone:</strong> 010-000-0000</div>
+        <div><strong>Email:</strong> ninaz5021@gmail.com</div>
+        <div><strong>Location:</strong> 광주광역시</div>
+      </div>
+    </section>
+
+    <footer>
+      © 2026 Ninaz Shin Portfolio. All Rights Reserved.
+    </footer>
+
+  </div>
+
+</body>
+</html>
